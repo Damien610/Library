@@ -2,6 +2,11 @@ package Library;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
+import java.util.Collections;
+import java.util.Comparator;
+import java.io.FileWriter;
+import java.io.IOException;
 
 public class Library {
     private ArrayList<Book> livres;
@@ -59,5 +64,30 @@ public class Library {
 
 	public void setLivres(ArrayList<Book> livres) {
 		this.livres = livres;
+	}
+	
+	public void trierLivresParTitre() {
+	    Collections.sort(livres, Comparator.comparing(Book::getTitre, String.CASE_INSENSITIVE_ORDER));
+	}
+	
+	public List<Book> rechercherLivresParMotCle(String motCle) {
+	    List<Book> resultats = new ArrayList<>();
+	    for (Book livre : livres) {
+	        if (livre.getTitre().toLowerCase().contains(motCle.toLowerCase())) {
+	            resultats.add(livre);
+	        }
+	    }
+	    return resultats;
+	}
+	
+	public void exporterVersFichier(String nomFichier) {
+	    try (FileWriter writer = new FileWriter(nomFichier)) {
+	        for (Book livre : livres) {
+	            writer.write(livre.getTitre() + " by " + livre.getAuteur() + " (" + livre.getAnneePublication() + ")\n");
+	        }
+	        System.out.println("Export effectué avec succès dans : " + nomFichier);
+	    } catch (IOException e) {
+	        System.out.println("Erreur lors de l'export : " + e.getMessage());
+	    }
 	}
 }
